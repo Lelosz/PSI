@@ -1,5 +1,5 @@
 """
-WSGI config for PSI_162635 project.
+WSGI config for PSI project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PSI_162635.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PSI.settings')
 
 application = get_wsgi_application()
