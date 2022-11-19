@@ -8,6 +8,12 @@ class Obywatel(models.Model):
     adres = models.CharField(max_length=50)
     telefon = models.CharField(max_length=9)
 
+    class Meta:
+        ordering = ('imie',)
+
+    def __str__(self):
+        return self.imie+' '+self.nazwisko
+
 
 class Pracownik(models.Model):
     imie = models.CharField(max_length=20)
@@ -18,10 +24,18 @@ class Pracownik(models.Model):
     zarobki = models.DecimalField(max_digits=7, decimal_places=2)
     id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.RESTRICT)
 
+    def __str__(self):
+        return self.imie+' '+self.nazwisko
+
+
+
 
 class Oddzial(models.Model):
     nazwa = models.CharField(max_length=45)
     kierownik = models.ForeignKey('Pracownik', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nazwa
 
 
 class Sprawa(models.Model):
@@ -32,6 +46,9 @@ class Sprawa(models.Model):
     data_zgloszenia = models.DateField(auto_now_add=True)
     w_toku = models.BooleanField(default=True)
     data_zamkniecia = models.DateField(default=None)
+
+    def __str__(self):
+        return self.id_oddzialu
 
 
 class StronyWSprawie(models.Model):
@@ -45,6 +62,11 @@ class StronyWSprawie(models.Model):
     osoba = models.ForeignKey(Obywatel, on_delete=models.RESTRICT)
     rodzaj = models.CharField(max_length=3, choices=RODZAJ)
 
+    def __str__(self):
+        return self.sprawa
+
+
+
 
 class Samochod(models.Model):
     nr_rejestracyjny = models.CharField(max_length=7)
@@ -54,8 +76,13 @@ class Samochod(models.Model):
     silnik = models.CharField(max_length=15)
     ubezpieczenie = models.TextField()
 
+    def __str__(self):
+        return self.nr_rejestracyjny
 
 class Szkoda(models.Model):
     opis = models.TextField()
     odszkodowanie = models.DecimalField(max_digits=8, decimal_places=2)
     samochod = models.ForeignKey(Samochod, on_delete=models.RESTRICT)
+
+    def __str__(self):
+        return self.opis
