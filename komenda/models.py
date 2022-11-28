@@ -22,24 +22,22 @@ class Pracownik(models.Model):
     adres = models.CharField(max_length=50)
     telefon = models.CharField(max_length=9)
     zarobki = models.DecimalField(max_digits=7, decimal_places=2)
-    id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.RESTRICT)
+    id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.RESTRICT, default=None, blank=True, null=True)
 
     def __str__(self):
         return self.imie+' '+self.nazwisko
 
 
-
-
 class Oddzial(models.Model):
     nazwa = models.CharField(max_length=45)
-    kierownik = models.ForeignKey('Pracownik', on_delete=models.CASCADE)
+    kierownik = models.ForeignKey('Pracownik', on_delete=models.CASCADE, default=None, blank=True, null=True)
 
     def __str__(self):
         return self.nazwa
 
 
 class Sprawa(models.Model):
-    id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.RESTRICT)
+    id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.RESTRICT, default=None, blank=True, null=True)
     opis = models.TextField()
     prowadzacy = models.ForeignKey(Pracownik, on_delete=models.RESTRICT)
     strona = models.ManyToManyField('Obywatel', through='StronyWSprawie')
@@ -66,8 +64,6 @@ class StronyWSprawie(models.Model):
         return self.sprawa
 
 
-
-
 class Samochod(models.Model):
     nr_rejestracyjny = models.CharField(max_length=7)
     marka = models.CharField(max_length=15)
@@ -79,10 +75,11 @@ class Samochod(models.Model):
     def __str__(self):
         return self.nr_rejestracyjny
 
+
 class Szkoda(models.Model):
     opis = models.TextField()
     odszkodowanie = models.DecimalField(max_digits=8, decimal_places=2)
-    samochod = models.ForeignKey(Samochod, on_delete=models.RESTRICT)
+    samochod = models.ForeignKey(Samochod, on_delete=models.RESTRICT, default=None, blank=True, null=True)
 
     def __str__(self):
         return self.opis

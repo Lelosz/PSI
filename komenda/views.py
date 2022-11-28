@@ -23,55 +23,98 @@ from django.contrib.auth.models import User
 class ObywatelList(generics.ListCreateAPIView):
     queryset = Obywatel.objects.all()
     serializer_class = ObywatelSerializer
-    name = 'obywatel'
+    name = 'obywatel-list'
+
+
+class ObywatelDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Obywatel.objects.all()
+    serializer_class = ObywatelSerializer
+    name = 'obywatel-detail'
 
 
 class PracownikList(generics.ListCreateAPIView):
     queryset = Pracownik.objects.all()
     serializer_class = PracownikSerializer
-    name = 'pracownik'
+    name = 'pracownik-list'
+
+
+class PracownikDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Pracownik.objects.all()
+    serializer_class = PracownikSerializer
+    name = 'pracownik-detail'
 
 
 class OddzialList(generics.ListCreateAPIView):
     queryset = Oddzial.objects.all()
     serializer_class = OddzialSerializer
-    name = 'oddzial'
+    name = 'oddzial-list'
+
+
+
+class OddzialDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Oddzial.objects.all()
+    serializer_class = OddzialSerializer
+    name = 'oddzial-detail'
 
 
 class SprawaList(generics.ListCreateAPIView):
     queryset = Sprawa.objects.all()
     serializer_class = SprawaSerializer
-    name = 'sprawa'
+    name = 'sprawa-list'
+
+
+class SprawaDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Sprawa.objects.all()
+    serializer_class = SprawaSerializer
+    name = 'sprawa-detail'
 
 
 class StronyWSprawieList(generics.ListCreateAPIView):
     queryset = StronyWSprawie.objects.all()
     serializer_class = StronyWSprawieSerializer
-    name = 'stronywsprawie'
+    name = 'stronywsprawie-list'
+
+
+class StronyWSprawieDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StronyWSprawie.objects.all()
+    serializer_class = StronyWSprawieSerializer
+    name = 'stronywsprawie-detail'
 
 
 class SamochodList(generics.ListCreateAPIView):
     queryset = Samochod.objects.all()
     serializer_class = SamochodSerializer
-    name = 'samochod'
+    name = 'samochod-list'
+
+
+class SamochodDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Samochod.objects.all()
+    serializer_class = SamochodSerializer
+    name = 'samochod-detail'
 
 
 class SzkodaList(generics.ListCreateAPIView):
     queryset = Szkoda.objects.all()
     serializer_class = SzkodaSerializer
-    name = 'szkoda'
+    name = 'szkoda-list'
+
+
+class SzkodaDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Szkoda.objects.all()
+    serializer_class = SzkodaSerializer
+    name = 'szkoda-detail'
 
 
 class ApiRoot(generics.GenericAPIView):
     name = 'api-root'
 
     def get(self, request, *args, **kwargs):
-        return Response({'obywatels': reverse(ObywatelList.name, request=request),
-                         'pracowniks': reverse(PracownikList.name, request=request),
-                         'oddzials': reverse(OddzialList.name, request=request),
-                         'sprawas': reverse(SprawaList.name, request=request),
-                         'samochods': reverse(SamochodList.name, request=request),
-                         'szkodas': reverse(SzkodaList.name, request=request)})
+        return Response({'obywatele': reverse(ObywatelList.name, request=request),
+                         'pracownicy': reverse(PracownikList.name, request=request),
+                         'oddzialy': reverse(OddzialList.name, request=request),
+                         'sprawy': reverse(SprawaList.name, request=request),
+                         'samochody': reverse(SamochodList.name, request=request),
+                         'szkody': reverse(SzkodaList.name, request=request)})
 
 
 
