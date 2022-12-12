@@ -24,24 +24,32 @@ class ObywatelList(generics.ListCreateAPIView):
     queryset = Obywatel.objects.all()
     serializer_class = ObywatelSerializer
     name = 'obywatel-list'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
 
 
 class ObywatelDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Obywatel.objects.all()
     serializer_class = ObywatelSerializer
     name = 'obywatel-detail'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
 
 
 class PracownikList(generics.ListCreateAPIView):
     queryset = Pracownik.objects.all()
     serializer_class = PracownikSerializer
     name = 'pracownik-list'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class PracownikDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Pracownik.objects.all()
     serializer_class = PracownikSerializer
     name = 'pracownik-detail'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class OddzialList(generics.ListCreateAPIView):
@@ -61,24 +69,28 @@ class SprawaList(generics.ListCreateAPIView):
     queryset = Sprawa.objects.all()
     serializer_class = SprawaSerializer
     name = 'sprawa-list'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class SprawaDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Sprawa.objects.all()
     serializer_class = SprawaSerializer
     name = 'sprawa-detail'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class StronyWSprawieList(generics.ListCreateAPIView):
     queryset = StronyWSprawie.objects.all()
     serializer_class = StronyWSprawieSerializer
     name = 'stronywsprawie-list'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class StronyWSprawieDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = StronyWSprawie.objects.all()
     serializer_class = StronyWSprawieSerializer
     name = 'stronywsprawie-detail'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class SamochodList(generics.ListCreateAPIView):
@@ -97,12 +109,14 @@ class SzkodaList(generics.ListCreateAPIView):
     queryset = Szkoda.objects.all()
     serializer_class = SzkodaSerializer
     name = 'szkoda-list'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class SzkodaDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Szkoda.objects.all()
     serializer_class = SzkodaSerializer
     name = 'szkoda-detail'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class ApiRoot(generics.GenericAPIView):

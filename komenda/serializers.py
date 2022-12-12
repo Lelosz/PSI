@@ -56,6 +56,8 @@ class PracownikSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'imie', 'nazwisko', 'PESEL', 'adres', 'telefon', 'zarobki', 'id_oddzialu']
 
 
+
+
 class OddzialSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
