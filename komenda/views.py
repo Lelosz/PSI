@@ -11,6 +11,9 @@ from django.contrib.auth.models import User
 # from .custompermission import IsCurrentUserOwnerOrReadOnly
 
 
+# from .custompermission import IsCurrentUserOwnerOrReadOnly
+
+
 # class ObywatelList(generics.ListCreateAPIView):
 #     queryset = Obywatel.imie.all()
 #     serializer_class = ObywatelSerializer
@@ -56,7 +59,7 @@ class OddzialList(generics.ListCreateAPIView):
     queryset = Oddzial.objects.all()
     serializer_class = OddzialSerializer
     name = 'oddzial-list'
-
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class OddzialDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -129,6 +132,3 @@ class ApiRoot(generics.GenericAPIView):
                          'sprawy': reverse(SprawaList.name, request=request),
                          'samochody': reverse(SamochodList.name, request=request),
                          'szkody': reverse(SzkodaList.name, request=request)})
-
-
-

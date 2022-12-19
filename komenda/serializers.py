@@ -50,6 +50,47 @@ class ObywatelSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PracownikSerializer(serializers.HyperlinkedModelSerializer):
+    imie = serializers.CharField(max_length=22)
+    nazwisko = serializers.CharField(max_length=45)
+    PESEL = serializers.CharField(max_length=11)
+    adres = serializers.CharField(max_length=50)
+    telefon = serializers.CharField(max_length=9)
+    zarobki = serializers.FloatField(min_value=0)
+    id_oddzialu = serializers.IntegerField(min_value=0)
+
+    def validate_imie(self, value):
+        if any(char.isdigit() for char in str(value)):
+            raise serializers.ValidationError("Imię nie może zawierać cyfr.")
+        return value.capitalize()
+
+    def validate_nazwisko(self, value):
+        if any(char.isdigit() for char in str(value)):
+            raise serializers.ValidationError("Nazwisko nie może zawierać cyfr.")
+        return value.capitalize()
+
+    def validate_PESEL(self, value):
+        def correct_pesel(pesel) -> bool: # https://www.infor.pl/prawo/gmina/dowod-osobisty/262184,Jak-sprawdzic-czy-masz-poprawny-PESEL.html
+            if len(str(pesel)) != 11:
+                return False
+            multiply = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3]
+            dig_sum, i = 0, 0
+            for i, digit in enumerate(str(pesel)[:-1]):
+                dig_sum += int(digit) * multiply[i]
+            dig_sum = 10 - int(str(dig_sum)[-1])
+            if dig_sum == int(str(pesel)[-1]):
+                return True
+            return False
+
+        if not correct_pesel(value):
+            raise serializers.ValidationError("Należy podać poprawny PESEL")
+        return value
+
+    def validate_telefon(self, value):
+        if any(not char.isdigit() for char in str(value)):
+            raise serializers.ValidationError("Telefon musi się składać tylko z cyfr")
+        if len(value) != 9:
+            raise serializers.ValidationError("Numer telefonu musi mieć 9 cyfr")
+        return value
 
     class Meta:
         model = Pracownik
@@ -59,13 +100,18 @@ class PracownikSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class OddzialSerializer(serializers.HyperlinkedModelSerializer):
-
+    nazwa = serializers.CharField(max_length=45)
     class Meta:
         model = Oddzial
         fields = ['url', 'nazwa', 'kierownik']
 
 
 class SprawaSerializer(serializers.HyperlinkedModelSerializer):
+    id_oddzialu = serializers.IntegerField(min_value=0)
+    prowadzacy = serializers.IntegerField(min_value=0)
+    data_zgloszenia = serializers.DateField()
+    w_toku = serializers.BooleanField()
+    data_zamkniecia = serializers.DateField(required=False)
 
     class Meta:
         model = Sprawa
