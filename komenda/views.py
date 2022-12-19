@@ -130,5 +130,6 @@ class ApiRoot(generics.GenericAPIView):
                          'pracownicy': reverse(PracownikList.name, request=request),
                          'oddzialy': reverse(OddzialList.name, request=request),
                          'sprawy': reverse(SprawaList.name, request=request),
+                         'strony w sprawie': reverse(StronyWSprawieList.name, request=request),
                          'samochody': reverse(SamochodList.name, request=request),
                          'szkody': reverse(SzkodaList.name, request=request)})

@@ -10,6 +10,7 @@ class ObywatelSerializer(serializers.HyperlinkedModelSerializer):
     adres = serializers.CharField(max_length=50)
     telefon = serializers.CharField(max_length=9)
 
+
     def validate_imie(self, value):
         if any(char.isdigit() for char in str(value)):
             raise serializers.ValidationError("Imię nie może zawierać cyfr.")
@@ -56,8 +57,8 @@ class PracownikSerializer(serializers.HyperlinkedModelSerializer):
     adres = serializers.CharField(max_length=50)
     telefon = serializers.CharField(max_length=9)
     zarobki = serializers.FloatField(min_value=0)
-    id_oddzialu = serializers.IntegerField(min_value=0)
-
+    # id_oddzialu = serializers.IntegerField(min_value=0)
+    id_oddzialu = serializers.SlugRelatedField(queryset=Oddzial.objects.all(),slug_field='nazwa')
     def validate_imie(self, value):
         if any(char.isdigit() for char in str(value)):
             raise serializers.ValidationError("Imię nie może zawierać cyfr.")
@@ -101,17 +102,20 @@ class PracownikSerializer(serializers.HyperlinkedModelSerializer):
 
 class OddzialSerializer(serializers.HyperlinkedModelSerializer):
     nazwa = serializers.CharField(max_length=45)
+    kierownik = serializers.SlugRelatedField(queryset=Pracownik.objects.all(),slug_field='nazwisko')
     class Meta:
         model = Oddzial
         fields = ['url', 'nazwa', 'kierownik']
 
 
 class SprawaSerializer(serializers.HyperlinkedModelSerializer):
-    id_oddzialu = serializers.IntegerField(min_value=0)
-    prowadzacy = serializers.IntegerField(min_value=0)
+    # id_oddzialu = serializers.IntegerField(min_value=0)
+    # prowadzacy = serializers.IntegerField(min_value=0)
     data_zgloszenia = serializers.DateField()
     w_toku = serializers.BooleanField()
     data_zamkniecia = serializers.DateField(required=False)
+    id_oddzialu = serializers.SlugRelatedField(queryset=Oddzial.objects.all(),slug_field='nazwa')
+    prowadzacy = serializers.SlugRelatedField(queryset=Pracownik.objects.all(),slug_field='nazwisko')
 
     class Meta:
         model = Sprawa
@@ -119,21 +123,22 @@ class SprawaSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class StronyWSprawieSerializer(serializers.HyperlinkedModelSerializer):
-
+    osoba = serializers.SlugRelatedField(queryset=Obywatel.objects.all(), slug_field='imie')
+    sprawa = serializers.SlugRelatedField(queryset=Sprawa.objects.all(),slug_field='opis')
     class Meta:
         model = StronyWSprawie
         fields = ['url', 'RODZAJ', 'sprawa', 'osoba', 'rodzaj']
 
 
 class SamochodSerializer(serializers.HyperlinkedModelSerializer):
-
+    # szkody = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='SzkodaDetail')
     class Meta:
         model = Samochod
         fields = ['url', 'nr_rejestracyjny', 'marka', 'model', 'rok_prod', 'silnik', 'ubezpieczenie']
 
 
 class SzkodaSerializer(serializers.HyperlinkedModelSerializer):
-
+    samochod = serializers.SlugRelatedField(queryset=Samochod.objects.all(), slug_field='nr_rejestracyjny')
     class Meta:
         model = Szkoda
         fields = ['url', 'opis', 'odszkodowanie', 'samochod']
