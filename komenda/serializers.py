@@ -9,6 +9,7 @@ class ObywatelSerializer(serializers.HyperlinkedModelSerializer):
     PESEL = serializers.CharField(max_length=11)
     adres = serializers.CharField(max_length=50)
     telefon = serializers.CharField(max_length=9)
+    strony_w_sprawie = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='stronywsprawie-detail')
 
 
     def validate_imie(self, value):
@@ -47,7 +48,7 @@ class ObywatelSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Obywatel
-        fields = ['id', 'url', 'imie', 'nazwisko', 'PESEL', 'adres', 'telefon']
+        fields = ['id', 'url', 'imie', 'nazwisko', 'PESEL', 'adres', 'telefon','strony_w_sprawie']
 
 
 class PracownikSerializer(serializers.HyperlinkedModelSerializer):
@@ -58,7 +59,8 @@ class PracownikSerializer(serializers.HyperlinkedModelSerializer):
     telefon = serializers.CharField(max_length=9)
     zarobki = serializers.FloatField(min_value=0)
     # id_oddzialu = serializers.IntegerField(min_value=0)
-    id_oddzialu = serializers.SlugRelatedField(queryset=Oddzial.objects.all(),slug_field='nazwa')
+    id_oddzialu = serializers.SlugRelatedField(queryset=Oddzial.objects.all(),slug_field='nazwa', required=False)
+    sprawa = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='sprawa-detail')
     def validate_imie(self, value):
         if any(char.isdigit() for char in str(value)):
             raise serializers.ValidationError("Imię nie może zawierać cyfr.")
@@ -95,7 +97,7 @@ class PracownikSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Pracownik
-        fields = ['url', 'imie', 'nazwisko', 'PESEL', 'adres', 'telefon', 'zarobki', 'id_oddzialu']
+        fields = ['url', 'imie', 'nazwisko', 'PESEL', 'adres', 'telefon', 'zarobki', 'id_oddzialu','sprawa']
 
 
 
@@ -103,9 +105,11 @@ class PracownikSerializer(serializers.HyperlinkedModelSerializer):
 class OddzialSerializer(serializers.HyperlinkedModelSerializer):
     nazwa = serializers.CharField(max_length=45)
     kierownik = serializers.SlugRelatedField(queryset=Pracownik.objects.all(),slug_field='nazwisko')
+    pracownik = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='pracownik-detail')
+    sprawa = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='sprawa-detail')
     class Meta:
         model = Oddzial
-        fields = ['url', 'nazwa', 'kierownik']
+        fields = ['url', 'nazwa', 'kierownik','pracownik','sprawa']
 
 
 class SprawaSerializer(serializers.HyperlinkedModelSerializer):
@@ -116,10 +120,11 @@ class SprawaSerializer(serializers.HyperlinkedModelSerializer):
     data_zamkniecia = serializers.DateField(required=False)
     id_oddzialu = serializers.SlugRelatedField(queryset=Oddzial.objects.all(),slug_field='nazwa')
     prowadzacy = serializers.SlugRelatedField(queryset=Pracownik.objects.all(),slug_field='nazwisko')
+    strony_w_sprawie = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='stronywsprawie-detail')
 
     class Meta:
         model = Sprawa
-        fields = ['url', 'id_oddzialu', 'opis', 'prowadzacy', 'strona', 'data_zgloszenia', 'w_toku', 'data_zamkniecia']
+        fields = ['url', 'id_oddzialu', 'opis', 'prowadzacy', 'strona', 'data_zgloszenia', 'w_toku', 'data_zamkniecia','strony_w_sprawie']
 
 
 class StronyWSprawieSerializer(serializers.HyperlinkedModelSerializer):
@@ -132,9 +137,10 @@ class StronyWSprawieSerializer(serializers.HyperlinkedModelSerializer):
 
 class SamochodSerializer(serializers.HyperlinkedModelSerializer):
     # szkody = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='SzkodaDetail')
+    szkoda = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='szkoda-detail')
     class Meta:
         model = Samochod
-        fields = ['url', 'nr_rejestracyjny', 'marka', 'model', 'rok_prod', 'silnik', 'ubezpieczenie']
+        fields = ['url', 'nr_rejestracyjny', 'marka', 'model', 'rok_prod', 'silnik', 'ubezpieczenie','szkoda']
 
 
 class SzkodaSerializer(serializers.HyperlinkedModelSerializer):

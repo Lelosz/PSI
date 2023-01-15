@@ -12,7 +12,7 @@ class Obywatel(models.Model):
         ordering = ('imie',)
 
     def __str__(self):
-        return self.imie+' '+self.nazwisko
+        return str(self.imie+' '+self.nazwisko)
 
 
 class Pracownik(models.Model):
@@ -22,31 +22,31 @@ class Pracownik(models.Model):
     adres = models.CharField(max_length=50)
     telefon = models.CharField(max_length=9)
     zarobki = models.DecimalField(max_digits=7, decimal_places=2)
-    id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.RESTRICT, default=None, blank=True, null=True)
+    id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.RESTRICT, blank=True, null=True)
 
     def __str__(self):
-        return self.imie+' '+self.nazwisko
+        return str(self.imie+' '+self.nazwisko)
 
 
 class Oddzial(models.Model):
     nazwa = models.CharField(max_length=45)
-    kierownik = models.ForeignKey('Pracownik', on_delete=models.CASCADE, default=None, blank=True, null=True)
+    kierownik = models.ForeignKey('Pracownik', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return self.nazwa
+        return str(self.nazwa)
 
 
 class Sprawa(models.Model):
-    id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.RESTRICT, default=None, blank=True, null=True)
+    id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.SET_NULL, blank=True, null=True)
     opis = models.TextField()
-    prowadzacy = models.ForeignKey(Pracownik, on_delete=models.RESTRICT)
+    prowadzacy = models.ForeignKey('Pracownik', on_delete=models.RESTRICT)
     strona = models.ManyToManyField('Obywatel', through='StronyWSprawie')
     data_zgloszenia = models.DateField(auto_now_add=True)
     w_toku = models.BooleanField(default=True)
     data_zamkniecia = models.DateField(default=None)
 
     def __str__(self):
-        return self.id_oddzialu
+        return str(self.id_oddzialu)
 
 
 class StronyWSprawie(models.Model):
@@ -56,12 +56,12 @@ class StronyWSprawie(models.Model):
         ('SPR', 'Sprawca'),
         ('SWI', 'Świadek'),
     )
-    sprawa = models.ForeignKey(Sprawa, on_delete=models.RESTRICT)
-    osoba = models.ForeignKey(Obywatel, on_delete=models.RESTRICT)
+    sprawa = models.ForeignKey('Sprawa', on_delete=models.RESTRICT)
+    osoba = models.ForeignKey('Obywatel', on_delete=models.RESTRICT)
     rodzaj = models.CharField(max_length=3, choices=RODZAJ)
 
     def __str__(self):
-        return self.sprawa
+        return str(self.sprawa)
 
 
 class Samochod(models.Model):
@@ -73,13 +73,13 @@ class Samochod(models.Model):
     ubezpieczenie = models.TextField()
 
     def __str__(self):
-        return self.nr_rejestracyjny
+        return str(self.nr_rejestracyjny)
 
 
 class Szkoda(models.Model):
     opis = models.TextField()
     odszkodowanie = models.DecimalField(max_digits=8, decimal_places=2)
-    samochod = models.ForeignKey(Samochod, on_delete=models.RESTRICT, default=None, blank=True, null=True)
+    samochod = models.ForeignKey('Samochod', on_delete=models.RESTRICT, blank=True, null=True)
 
     def __str__(self):
-        return self.opis
+        return str(self.opis)
