@@ -3,6 +3,8 @@ from .models import Obywatel, Pracownik, Oddzial, Sprawa, StronyWSprawie, Samoch
 from django.contrib.auth.models import User
 
 
+
+
 class ObywatelSerializer(serializers.HyperlinkedModelSerializer):
     imie = serializers.CharField(max_length=22)
     nazwisko = serializers.CharField(max_length=45)
@@ -122,6 +124,11 @@ class SprawaSerializer(serializers.HyperlinkedModelSerializer):
     prowadzacy = serializers.SlugRelatedField(queryset=Pracownik.objects.all(),slug_field='nazwisko')
     strony_w_sprawie = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='stronywsprawie-detail')
 
+    def validate(self, data):
+        if data['data_zgloszenia'] > data['data_zamkniecia']:
+            raise serializers.ValidationError("Data zgłoszenia musi być wcześniejsza od daty zamknięcia.")
+        return data
+
     class Meta:
         model = Sprawa
         fields = ['url', 'id_oddzialu', 'opis', 'prowadzacy', 'strona', 'data_zgloszenia', 'w_toku', 'data_zamkniecia','strony_w_sprawie']
@@ -138,9 +145,10 @@ class StronyWSprawieSerializer(serializers.HyperlinkedModelSerializer):
 class SamochodSerializer(serializers.HyperlinkedModelSerializer):
     # szkody = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='SzkodaDetail')
     szkoda = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='szkoda-detail')
+    owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = Samochod
-        fields = ['url', 'nr_rejestracyjny', 'marka', 'model', 'rok_prod', 'silnik', 'ubezpieczenie','szkoda']
+        fields = ['url', 'nr_rejestracyjny', 'marka', 'model', 'rok_prod', 'silnik', 'ubezpieczenie','szkoda','owner']
 
 
 class SzkodaSerializer(serializers.HyperlinkedModelSerializer):
@@ -148,3 +156,14 @@ class SzkodaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Szkoda
         fields = ['url', 'opis', 'odszkodowanie', 'samochod']
+class UserSamochodSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Samochod
+        fields = ['url','nr_rejestracyjny']
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    samochod = UserSamochodSerializer(many=True,read_only=True)
+    class Meta:
+        model = User
+        fields = ['url','pk','username','samochod']

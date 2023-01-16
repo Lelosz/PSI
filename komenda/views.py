@@ -5,22 +5,8 @@ from rest_framework.reverse import reverse
 from rest_framework.response import Response
 from komenda.models import Obywatel, Pracownik, Oddzial, Sprawa, StronyWSprawie, Samochod, Szkoda
 from komenda.serializers import ObywatelSerializer, PracownikSerializer, OddzialSerializer, SprawaSerializer, StronyWSprawieSerializer, SamochodSerializer, SzkodaSerializer
-from django_filters import AllValuesFilter, DateTimeFilter, NumberFilter, FilterSet
 from rest_framework import permissions
-from django.contrib.auth.models import User
-# from .custompermission import IsCurrentUserOwnerOrReadOnly
-
-
-# from .custompermission import IsCurrentUserOwnerOrReadOnly
-
-
-# class ObywatelList(generics.ListCreateAPIView):
-#     queryset = Obywatel.imie.all()
-#     serializer_class = ObywatelSerializer
-#     name = 'obywatel'
-#     filterset_fields = ['imie']
-#     search_fields = ['imie']
-#     ordering_fields = ['imie']
+from .custompermissions import IsCurrentUserOwnerOrReadOnly
 
 
 class ObywatelList(generics.ListCreateAPIView):
@@ -28,6 +14,9 @@ class ObywatelList(generics.ListCreateAPIView):
     serializer_class = ObywatelSerializer
     name = 'obywatel-list'
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    filter_fields = ['imie', 'nazwisko', 'adres', 'telefon']
+    search_fields = ['imie', 'nazwisko']
+    ordering_fields = ['imie', 'nazwisko']
 
 
 
@@ -46,6 +35,9 @@ class PracownikList(generics.ListCreateAPIView):
     serializer_class = PracownikSerializer
     name = 'pracownik-list'
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    filter_fields = ['imie', 'nazwisko', 'adres', 'zarobki','id_oddzialu']
+    search_fields = ['imie', 'nazwisko','id_oddzialu']
+    ordering_fields = ['imie', 'nazwisko', 'id_oddzialu']
 
 
 class PracownikDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -100,12 +92,17 @@ class SamochodList(generics.ListCreateAPIView):
     queryset = Samochod.objects.all()
     serializer_class = SamochodSerializer
     name = 'samochod-list'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCurrentUserOwnerOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class SamochodDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Samochod.objects.all()
     serializer_class = SamochodSerializer
     name = 'samochod-detail'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCurrentUserOwnerOrReadOnly,)
 
 
 class SzkodaList(generics.ListCreateAPIView):

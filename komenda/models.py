@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Obywatel(models.Model):
@@ -7,6 +8,7 @@ class Obywatel(models.Model):
     PESEL = models.CharField(max_length=11)
     adres = models.CharField(max_length=50)
     telefon = models.CharField(max_length=9)
+
 
     class Meta:
         ordering = ('imie',)
@@ -23,6 +25,7 @@ class Pracownik(models.Model):
     telefon = models.CharField(max_length=9)
     zarobki = models.DecimalField(max_digits=7, decimal_places=2)
     id_oddzialu = models.ForeignKey('Oddzial', on_delete=models.RESTRICT, blank=True, null=True)
+
 
     def __str__(self):
         return str(self.imie+' '+self.nazwisko)
@@ -71,6 +74,7 @@ class Samochod(models.Model):
     rok_prod = models.IntegerField()
     silnik = models.CharField(max_length=15)
     ubezpieczenie = models.TextField()
+    owner = models.ForeignKey('auth.User', related_name='samochod', on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.nr_rejestracyjny)
