@@ -46,7 +46,7 @@ class Sprawa(models.Model):
     strona = models.ManyToManyField('Obywatel', through='StronyWSprawie')
     data_zgloszenia = models.DateField(auto_now_add=True)
     w_toku = models.BooleanField(default=True)
-    data_zamkniecia = models.DateField(default=None)
+    data_zamkniecia = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return str(self.id_oddzialu)
